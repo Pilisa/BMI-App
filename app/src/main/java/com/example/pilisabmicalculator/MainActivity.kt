@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +25,8 @@ class MainActivity : ComponentActivity() {
             BMICalculatorApp()
 
 
+
+
         }
     }
 }
@@ -31,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BMICalculatorApp() {
+    var resultColor by remember { mutableStateOf(Color.Black) }
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
@@ -62,21 +66,35 @@ fun BMICalculatorApp() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = {
+
             val w = weight.toFloatOrNull()
             val h = height.toFloatOrNull()
 
-            result = if (w == null || h == null || w <= 0 || h <= 0) {
-                "Enter valid input"
+            if (w == null || h == null || w <= 0 || h <= 0) {
+                result = "Enter valid input"
+                resultColor = Color.Red
             } else {
                 val bmi = w / (h * h)
-                "BMI: %.2f".format(bmi)
+
+                val category = when {
+                    bmi < 18.5 -> { resultColor = Color.Blue; "Underweight" }
+                    bmi < 25 -> { resultColor = Color.Green; "Normal" }
+                    bmi < 30 -> { resultColor = Color.Yellow; "Overweight" }
+                    else -> { resultColor = Color.Red; "Obese" }
+                }
+
+                result = "BMI: %.2f\nCategory: %s".format(bmi, category)
             }
+
         }) {
             Text("Calculate BMI")
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(text = result)
+        Text(
+            text = result,
+            color = resultColor
+        )
     }
 }
