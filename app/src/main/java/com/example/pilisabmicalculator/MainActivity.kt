@@ -89,8 +89,15 @@ fun BMICalculatorApp() {
         }) {
             Text("Calculate BMI")
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            weight = ""
+            height = ""
+            result = ""
+            resultColor = Color.Black
+        }) {
+            Text("Reset")
+        }
 
         Text(
             text = result,
