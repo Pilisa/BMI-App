@@ -34,12 +34,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BMICalculatorApp() {
+
     var resultColor by remember { mutableStateOf(Color.Black) }
     var weight by remember { mutableStateOf("") }
     var height by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
-
-
 
     Column(
         modifier = Modifier
@@ -49,59 +48,83 @@ fun BMICalculatorApp() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        TextField(
-            value = weight,
-            onValueChange = { weight = it },
-            label = { Text("Enter weight (kg)") }
-        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-        TextField(
-            value = height,
-            onValueChange = { height = it },
-            label = { Text("Enter height (m)") }
-        )
+                Text(
+                    text = "BMI Calculator",
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
+                TextField(
+                    value = weight,
+                    onValueChange = { weight = it },
+                    label = { Text("Enter weight (kg)") }
+                )
 
-            val w = weight.toFloatOrNull()
-            val h = height.toFloatOrNull()
+                Spacer(modifier = Modifier.height(16.dp))
 
-            if (w == null || h == null || w <= 0 || h <= 0) {
-                result = "Enter valid input"
-                resultColor = Color.Red
-            } else {
-                val bmi = w / (h * h)
+                TextField(
+                    value = height,
+                    onValueChange = { height = it },
+                    label = { Text("Enter height (m)") }
+                )
 
-                val category = when {
-                    bmi < 18.5 -> { resultColor = Color.Blue; "Underweight" }
-                    bmi < 25 -> { resultColor = Color.Green; "Normal" }
-                    bmi < 30 -> { resultColor = Color.Yellow; "Overweight" }
-                    else -> { resultColor = Color.Red; "Obese" }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(onClick = {
+
+                    val w = weight.toFloatOrNull()
+                    val h = height.toFloatOrNull()
+
+                    if (w == null || h == null || w <= 0 || h <= 0) {
+                        result = "Enter valid input"
+                        resultColor = Color.Red
+                    } else {
+                        val bmi = w / (h * h)
+
+                        val category = when {
+                            bmi < 18.5 -> { resultColor = Color.Blue; "Underweight 😢 Eat more!" }
+                            bmi < 25 -> { resultColor = Color.Green; "Normal 🎉 Great job!" }
+                            bmi < 30 -> { resultColor = Color.Yellow; "Overweight ⚠️ Time to exercise!" }
+                            else -> { resultColor = Color.Red; "Obese 🚨 Let’s improve your health!" }
+                        }
+
+                        result = "BMI: %.2f\nCategory: %s".format(bmi, category)
+                    }
+
+                }) {
+                    Text("Calculate BMI")
                 }
 
-                result = "BMI: %.2f\nCategory: %s".format(bmi, category)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = {
+                    weight = ""
+                    height = ""
+                    result = ""
+                    resultColor = Color.Black
+                }) {
+                    Text("Reset")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = result,
+                    color = resultColor,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
-
-        }) {
-            Text("Calculate BMI")
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            weight = ""
-            height = ""
-            result = ""
-            resultColor = Color.Black
-        }) {
-            Text("Reset")
-        }
-
-        Text(
-            text = result,
-            color = resultColor
-        )
     }
 }
